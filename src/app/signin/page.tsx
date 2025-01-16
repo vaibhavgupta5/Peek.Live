@@ -3,16 +3,10 @@ import {
   SignInButton,
   SignedIn,
   SignedOut,
-  UserButton
-} from '@clerk/nextjs'
-import './globals.css'
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+  UserButton,
+} from "@clerk/nextjs";
+export default function Signin() {
   return (
-    <ClerkProvider>
       <html lang="en">
         <body>
           <SignedOut>
@@ -21,9 +15,7 @@ export default function RootLayout({
           <SignedIn>
             <UserButton />
           </SignedIn>
-          {children}
         </body>
       </html>
-    </ClerkProvider>
-  )
+  );
 }

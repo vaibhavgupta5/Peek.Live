@@ -45,7 +45,7 @@ const UserSchema = new Schema<IUser>({
   },
   college: {
     type: String,
-    required: true,
+    // required: true,
   },
   events_in: {
     type: [String],
@@ -62,22 +62,24 @@ const UserSchema = new Schema<IUser>({
   },
   gender: {
     type: String,
-    required: true,
   },
   resume: {
     type: String,
   },
-    portfolio: {
-        type: String,
+  portfolio: {
+    type: String,
+  },
+  events_created: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Event",
     },
-    events_created: [{
-        type: Schema.Types.ObjectId,
-        ref: "Event",
-    }],
-
+  ],
 });
 
-
-const UserModel = mongoose.models && mongoose.models.User ? (mongoose.models.User as mongoose.Model<IUser>) : (mongoose.model<IUser>("User", UserSchema)); 
+const UserModel =
+  mongoose.models && mongoose.models.User
+    ? (mongoose.models.User as mongoose.Model<IUser>)
+    : mongoose.model<IUser>("User", UserSchema);
 
 export default UserModel;
