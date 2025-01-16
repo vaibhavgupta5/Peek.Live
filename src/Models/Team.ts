@@ -5,13 +5,15 @@ export interface ITeam extends Document {
   team_username: string;
   team_members: [
     {
-      member_id: string;
       member_username: string;
       isLeader: boolean;
+      isVerified: boolean;
     }
   ];
   team_leader: string;
   event_username: string;
+  isTeamVerified: boolean;
+  teamCode: string
 }
 
 const TeamSchema = new Schema<ITeam>({
@@ -25,10 +27,6 @@ const TeamSchema = new Schema<ITeam>({
   },
   team_members: [
     {
-      member_id: {
-        type: String,
-        required: true,
-      },
       member_username: {
         type: String,
         required: true,
@@ -37,6 +35,11 @@ const TeamSchema = new Schema<ITeam>({
         type: Boolean,
         required: true,
         default: false,
+      },
+      isVerified: {
+        type: Boolean,
+        required: true,
+        default: false
       },
     },
   ],
@@ -48,6 +51,15 @@ const TeamSchema = new Schema<ITeam>({
     type: String,
     required: true,
   },
+  isTeamVerified: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  teamCode: {
+    type: String,
+    required: true,
+  }
 });
 
 

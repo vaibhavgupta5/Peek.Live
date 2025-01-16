@@ -11,7 +11,7 @@ interface IUser extends Document {
   college: string;
   events_in: string[];
   bio: string;
-  desciption: string;
+  description: string;
   stack: string[];
   gender: string;
   resume: string;
@@ -54,7 +54,7 @@ const UserSchema = new Schema<IUser>({
   bio: {
     type: String,
   },
-  desciption: {
+  description: {
     type: String,
   },
   stack: {

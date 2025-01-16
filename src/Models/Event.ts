@@ -1,52 +1,47 @@
-import mongoose , {Document, Schema} from "mongoose";
-
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface IEvent extends Document {
     event_name: string;
     description: string;
     image: string;
-    date: Date;
+    date: string;
     time: string;
     venue: string;
-    questions: [
-        {
-            question: string;
-            type: string;
-        }
-    ];
+    questions: Array<{
+        question: string;
+        questionType: string; // Changed 'type' to 'questionType' to avoid using the reserved keyword
+    }>;
     send_email: boolean;
     email_template: string;
-    faq: [
-        {
-            question: string;
-            answer: string;
-        }
-    ];
-    timeline: [
-        {
-            time: string;
-            event: string;
-            description: string;
-        }
-    ];
+    faq: Array<{
+        question: string;
+        answer: string;
+    }>;
+    timeline: Array<{
+        time: string;
+        event: string;
+        description: string;
+    }>;
     sponsers: string[];
-    prizes: [
-        {
-            prize: string;
-            description: string;
-            amount: number;
-        }
-    ];
+    prizes: Array<{
+        prize: string;
+        description: string;
+        amount: number;
+    }>;
     problem_statements: string[];
     team_size: number;
     teams: string[];
     event_admin: string;
     event_username: string;
     created_at: Date;
+    participants: Array<{
+        username: string;
+        answers: string[];
+    }>;
+    autoVerify: boolean;
 }
 
 const EventSchema = new Schema<IEvent>({
-
     event_name: {
         type: String,
         required: true,
@@ -59,7 +54,7 @@ const EventSchema = new Schema<IEvent>({
         type: String,
     },
     date: {
-        type: Date,
+        type: String,
         required: true,
     },
     time: {
@@ -73,9 +68,9 @@ const EventSchema = new Schema<IEvent>({
     questions: {
         type: [
             {
-                question: String,
-                type: String,
-            }
+                question: { type: String, required: true },
+                questionType: { type: String, required: true }, 
+            },
         ],
         default: [],
     },
@@ -92,7 +87,7 @@ const EventSchema = new Schema<IEvent>({
             {
                 question: String,
                 answer: String,
-            }
+            },
         ],
         default: [],
     },
@@ -102,7 +97,7 @@ const EventSchema = new Schema<IEvent>({
                 time: String,
                 event: String,
                 description: String,
-            }
+            },
         ],
         default: [],
     },
@@ -116,7 +111,7 @@ const EventSchema = new Schema<IEvent>({
                 prize: String,
                 description: String,
                 amount: Number,
-            }
+            },
         ],
         default: [],
     },
@@ -145,9 +140,23 @@ const EventSchema = new Schema<IEvent>({
         type: Date,
         default: Date.now,
     },
+    participants: {
+        type: [
+            {
+                username: String,
+                answers: [String],
+            },
+        ],
+        default: [],
+    },
+    autoVerify: {
+        type: Boolean,
+        default: false,
+    },
+});
 
-})
-
-const EventModel = mongoose.models && mongoose.models.Event ? (mongoose.models.Event as mongoose.Model<IEvent>) : (mongoose.model<IEvent>("Event", EventSchema)); 
+const EventModel = mongoose.models && mongoose.models.Event
+    ? (mongoose.models.Event as mongoose.Model<IEvent>)
+    : mongoose.model<IEvent>("Event", EventSchema);
 
 export default EventModel;
