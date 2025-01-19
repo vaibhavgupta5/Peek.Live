@@ -9,7 +9,7 @@ export interface IEvent extends Document {
     venue: string;
     questions: Array<{
         question: string;
-        questionType: string; // Changed 'type' to 'questionType' to avoid using the reserved keyword
+        questionType: string; 
     }>;
     send_email: boolean;
     email_template: string;
