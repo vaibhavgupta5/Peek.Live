@@ -14,6 +14,8 @@ export async function POST(req: NextRequest) {
 
   const { firstName, lastName, email } = addUser.parse(body);
 
+  console.log(firstName, lastName, email);
+
   connectDB();
 
 
