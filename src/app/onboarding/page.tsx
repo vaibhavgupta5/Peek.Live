@@ -2,56 +2,35 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import axios from "axios";
 
 export default function OnboardingComponent() {
   const [error, setError] = useState("");
-  const { user } = useUser(); // Get the current user from Clerk
+  const { user } = useUser(); // Ensure user is fully loaded
   const router = useRouter();
 
-  // Function to save the user to the database
-  const saveUserToDB = async () => {
-    if (!user) return;
 
-    const userData = {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.primaryEmailAddress?.emailAddress || "",
-    };
+  const User = {
+    onboardingDone : false,
+    firstName : user?.firstName,
+    lastName : user?.lastName,
+    fullName : user?.fullName,
+    email : user?.primaryEmailAddress?.emailAddress,
+    id : user?.id,
+    image: user?.imageUrl,
+  }
 
-    // Ensure required fields are present
-    if (!userData.firstName || !userData.lastName || !userData.email) {
-      setError("Incomplete user information.");
-      return;
-    }
+  console.log(User)
 
-    try {
-        console.log(userData);
-      const response = await axios.post("/api/addUser", userData);
-      if (!response.data.success) {
-        console.log(response.data);
-        setError(response.data.message || "Failed to save user.");
-      } else {
-        console.log("User added successfully!");
-      }
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "An error occurred while saving the user."
-      );
-    }
-  };
+  if (user) {
+    localStorage.setItem("userLocal", JSON.stringify(User));
+  }
 
-  // Save the user when the component mounts if the user exists
-  useEffect(() => {
-    saveUserToDB();
-  }, [user]);
-
-  // Handle form submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.target);
     const applicationName = formData.get("applicationName");
     const applicationType = formData.get("applicationType");
 
@@ -67,12 +46,13 @@ export default function OnboardingComponent() {
       });
 
       if (res.data.success) {
-        await user?.reload(); // Reload user data from Clerk API
-        router.push("/"); // Navigate to the homepage after successful onboarding
+        await user?.reload();
+        router.push("/");
       } else {
         setError(res.data.message || "Failed to complete onboarding.");
       }
     } catch (err) {
+      console.error("Error:", err.response || err);
       setError(
         err.response?.data?.message ||
           "An error occurred while completing onboarding."
