@@ -4,28 +4,31 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 const onBoardDetails = z.object({
-  contact_number: z.string(),
-  linkedin: z.string(),
-  github: z.string(),
-  college: z.string(),
-  bio: z.string(),
-  description: z.string(),
-  stack: z.array(z.string()),
-  gender: z.string(),
-  portfolio: z.string().url(),
-  username: z.string(),
+  contact_number: z.string().optional(),
+  linkedin: z.string().optional(),
+  github: z.string().optional(),
+  college: z.string().optional(),
+  bio: z.string().optional(),
+  description: z.string().optional(),
+  stack: z.array(z.string()).optional(),
+  gender: z.string().optional(),
+
+  portfolio: z.string().optional(),
+  email: z.string(),
 });
+
+
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  const { contact_number, linkedin, github, college, bio, description, stack, portfolio, gender, username} = onBoardDetails.parse(body);
+  const { contact_number, linkedin, github, college, bio, description, stack, portfolio, gender, email} = onBoardDetails.parse(body);
  
   connectDB();
 
 
   try {
-    const existingUser = await UserModel.findOne({ username });
+    const existingUser = await UserModel.findOne({ email });
 
     if (!existingUser) {
       return NextResponse.json(
@@ -39,21 +42,21 @@ export async function POST(req: NextRequest) {
       );
     }
     
-      existingUser.contact_number = contact_number;
-      existingUser.linkedin = linkedin;
-      existingUser.github = github;
-      existingUser.college = college;
-      existingUser.bio = bio;
-      existingUser.description = description;
-      existingUser.stack = stack;
-      existingUser.portfolio = portfolio;
-      existingUser.gender = gender;
-      existingUser.stack = stack;
+      existingUser.contact_number = contact_number || "";
+      existingUser.linkedin = linkedin || "";
+      existingUser.github = github || "";
+      existingUser.college = college || "";
+      existingUser.bio = bio || "";
+      existingUser.description = description || "";
+      existingUser.stack = stack || [];
+      existingUser.portfolio = portfolio || "";
+      existingUser.gender = gender || "";
    
     
 
-    await existingUser.save();
 
+    await existingUser.save();
+    console.log("doneeeee")
     return NextResponse.json(
       {
         message: "User updated successfully",

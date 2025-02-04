@@ -2,7 +2,15 @@ import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextRequest, NextResponse } from 'next/server';
 
 const isOnboardingRoute = createRouteMatcher(['/onboarding']);
-const isPublicRoute = createRouteMatcher(['/signin', '/signout', '/onboarding', '/landing', '/api/addUser']);
+const isPublicRoute = createRouteMatcher([
+  '/signin', 
+  '/signout', 
+  '/onboarding', 
+  '/landing', 
+  '/api/addUser',
+  '/api/webhooks(.*)',
+  '/api/onboarding(.*)' 
+]);
 
 export default clerkMiddleware(async (auth, req: NextRequest) => {
   const { userId, sessionClaims, redirectToSignIn } = await auth();
@@ -10,6 +18,11 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
   console.log('Request URL:', req.url); // Debugging line
   console.log('isOnboardingRoute:', isOnboardingRoute(req)); // Debugging line
   console.log('isPublicRoute:', isPublicRoute(req)); // Debugging line
+
+  // Allow all API routes to pass through
+  if (req.url.includes('/api/')) {
+    return NextResponse.next();
+  }
 
   // For users visiting /onboarding, don't try to redirect
   if (userId && isOnboardingRoute(req)) {

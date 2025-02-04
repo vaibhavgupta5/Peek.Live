@@ -10,6 +10,7 @@ export default function Signin() {
         <body>
           <SignedOut>
             <SignInButton />
+            
           </SignedOut>
           <SignedIn>
             <UserButton />
